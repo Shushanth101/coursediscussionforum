@@ -1,0 +1,73 @@
+﻿[dotenv@17.3.1] injecting env (5) from .env -- tip: ≡ƒöÉ encrypt with Dotenvx: https://dotenvx.com
+=== TABLES ===
+  - comments
+  - follows
+  - posts
+  - users
+  - votes
+
+=== COLUMNS IN "comments" ===
+  comment_id : character varying(30) NOT NULL
+  author_id : character varying(30) NULL
+  post_id : character varying(30) NULL
+  parent_id : character varying(30) NULL
+  content : text NOT NULL
+  likes : integer NULL DEFAULT 0
+  created_at : timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP
+
+=== COLUMNS IN "follows" ===
+  follower_id : character varying(30) NOT NULL
+  following_id : character varying(30) NOT NULL
+  created_at : timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP
+
+=== COLUMNS IN "posts" ===
+  post_id : character varying(30) NOT NULL
+  author_id : character varying(30) NULL
+  title : text NOT NULL
+  body : text NOT NULL
+  created_at : timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP
+  embedding : USER-DEFINED NULL
+
+=== COLUMNS IN "users" ===
+  user_id : character varying(30) NOT NULL
+  full_name : character varying(100) NOT NULL
+  email : character varying(255) NOT NULL
+  password : text NOT NULL
+  profile_pic : text NULL DEFAULT 'https://res.cloudinary.com/dwlcmnxcb/image/upload/v1773065667/6596121_vkfliw.png'::text
+  created_at : timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP
+  refresh_token : text NULL
+  role : character varying(50) NULL DEFAULT 'User'::character varying
+  profile_content : text NULL DEFAULT '#Profile Page'::text
+
+=== COLUMNS IN "votes" ===
+  vote_id : integer NOT NULL DEFAULT nextval('votes_vote_id_seq'::regclass)
+  user_id : character varying(30) NULL
+  post_id : character varying(30) NULL
+  vote_type : integer NULL
+  created_at : timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP
+
+=== INDEXES ===
+  [comments] comments_pkey: CREATE UNIQUE INDEX comments_pkey ON public.comments USING btree (comment_id)
+  [follows] follows_pkey: CREATE UNIQUE INDEX follows_pkey ON public.follows USING btree (follower_id, following_id)
+  [posts] posts_pkey: CREATE UNIQUE INDEX posts_pkey ON public.posts USING btree (post_id)
+  [users] users_email_key: CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email)
+  [users] users_pkey: CREATE UNIQUE INDEX users_pkey ON public.users USING btree (user_id)
+  [votes] votes_pkey: CREATE UNIQUE INDEX votes_pkey ON public.votes USING btree (vote_id)
+  [votes] votes_user_id_post_id_key: CREATE UNIQUE INDEX votes_user_id_post_id_key ON public.votes USING btree (user_id, post_id)
+
+=== FOREIGN KEYS ===
+  comments.author_id -> users.user_id (comments_author_id_fkey)
+  comments.post_id -> posts.post_id (comments_post_id_fkey)
+  comments.parent_id -> comments.comment_id (comments_parent_id_fkey)
+  follows.following_id -> users.user_id (follows_following_id_fkey)
+  follows.follower_id -> users.user_id (follows_follower_id_fkey)
+  posts.author_id -> users.user_id (posts_author_id_fkey)
+  votes.user_id -> users.user_id (votes_user_id_fkey)
+  votes.post_id -> posts.post_id (votes_post_id_fkey)
+
+=== ROW COUNTS ===
+  comments: 8 rows
+  follows: 0 rows
+  posts: 11 rows
+  users: 3 rows
+  votes: 5 rows
